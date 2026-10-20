@@ -19,6 +19,21 @@
 
 ---
 
+## 📜 Member Contract Quicklinks
+
+Each team member has a dedicated, self-contained contract specifying their exact deliverables, endpoints, schemas, dependencies, and fallback plans:
+
+| Member & Role | Assigned Domain & Features | Individual Contract Link |
+|---|---|---|
+| **Member 1: Frontend & UI/UX** | Hero NLP search, book cards, Book Blend dock, Bookshelf drawer, mock toggle | 📄 [MEMBER_1_FRONTEND_CONTRACT.md](file:///c:/Users/acer/OneDrive/Desktop/Navya/hacklezgo/docs/contracts/MEMBER_1_FRONTEND_CONTRACT.md) |
+| **Member 2: Backend 1 (Recs & ML)** | In-memory semantic search (<500ms), "More like this", personalized re-ranking, Book Blend | 📄 [MEMBER_2_BACKEND_1_RECS_VECTOR_CONTRACT.md](file:///c:/Users/acer/OneDrive/Desktop/Navya/hacklezgo/docs/contracts/MEMBER_2_BACKEND_1_RECS_VECTOR_CONTRACT.md) |
+| **Member 3: Backend 2 (Core & DB)** | Bookshelves with status & ratings, JWT guest session, Taste Profile aggregator, Shareable lists | 📄 [MEMBER_3_BACKEND_2_CORE_DB_CONTRACT.md](file:///c:/Users/acer/OneDrive/Desktop/Navya/hacklezgo/docs/contracts/MEMBER_3_BACKEND_2_CORE_DB_CONTRACT.md) |
+| **Member 4: Backend 3 (AI & Ext)** | Gemini 2-sentence rationale with hash caching, query understanding parser, live stage ISBN ingest | 📄 [MEMBER_4_BACKEND_3_GENAI_ENRICHMENT_CONTRACT.md](file:///c:/Users/acer/OneDrive/Desktop/Navya/hacklezgo/docs/contracts/MEMBER_4_BACKEND_3_GENAI_ENRICHMENT_CONTRACT.md) |
+| **Member 5: Pitch & Product Lead** | 3-min script, 8-slide deck, 90-sec 5-step live demo choreography, Q&A defense, backup video | 📄 [MEMBER_5_PITCH_PRODUCT_CONTRACT.md](file:///c:/Users/acer/OneDrive/Desktop/Navya/hacklezgo/docs/contracts/MEMBER_5_PITCH_PRODUCT_CONTRACT.md) |
+| **Shared Inter-Backend Spec** | Universal `Book` schema, `ParsedFilters` schema, `TasteProfile` schema, cut triage | 📄 [SHARED_SCHEMAS_AND_INTEGRATION.md](file:///c:/Users/acer/OneDrive/Desktop/Navya/hacklezgo/docs/contracts/SHARED_SCHEMAS_AND_INTEGRATION.md) |
+
+---
+
 ## 👥 Team Breakdown & Ownership
 
 ```
@@ -28,14 +43,14 @@
 │ Member 1          │ 🎨 Frontend & UI/UX Designer                       │
 │                   │ Next.js/React, Glassmorphism, Responsive UI        │
 ├───────────────────┼────────────────────────────────────────────────────┤
-│ Member 2          │ ⚙️ Backend 1: Core API & Database Layer            │
-│                   │ SQLite/Postgres, Auth, CRUD Catalog, Bookshelves   │
+│ Member 2          │ 🧠 Backend 1: Recommendation & Vector Search       │
+│                   │ Semantic plot embeddings, Cosine ranking, Blend    │
 ├───────────────────┼────────────────────────────────────────────────────┤
-│ Member 3          │ 🧠 Backend 2: Recommendation & Vector Search       │
-│                   │ Semantic plot embeddings, Cosine ranking, Vibes    │
+│ Member 3          │ ⚙️ Backend 2: Core API & Database Layer            │
+│                   │ SQLite/Postgres, Bookshelves, Taste Aggregator     │
 ├───────────────────┼────────────────────────────────────────────────────┤
 │ Member 4          │ 🌐 Backend 3: External Data & GenAI Insights       │
-│                   │ Google Books API, Gemini "Why Read" generator      │
+│                   │ Google Books API, Gemini "Why Read", Stage Ingest  │
 ├───────────────────┼────────────────────────────────────────────────────┤
 │ Member 5          │ 🎙️ Presentation, Product & Pitch Lead              │
 │                   │ Pitch deck, 3-min script, Demo flow, Q&A defense   │

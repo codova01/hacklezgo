@@ -44,81 +44,57 @@ In a fast-paced hackathon, the #1 reason teams fail is **dependency blocking** (
 
 ### 🎨 Member 1: Frontend Developer & UI/UX Designer
 * **Core Mission:** Build an aesthetically stunning, responsive web interface that creates an instant "WOW" factor for hackathon judges.
-* **Key Responsibilities:**
-  - Initialize project template (Next.js / Vite + React with modern typography, glassmorphism, dark/light theme).
-  - Mock API integration: Use mock data from [API_CONTRACTS.md](file:///c:/Users/acer/OneDrive/Desktop/Navya/hacklezgo/docs/API_CONTRACTS.md) to build UI before backends are deployed.
-  - Implement Core Views:
-    1. **Hero / Discovery Landing:** Natural language prompt search bar (*"A fast-paced sci-fi like Interstellar with mind-bending time loops"*).
-    2. **Interactive Recommendation Grid:** Dynamic book cards with cover art, rating badges, genre tags, and "Why Recommended" AI insight chips.
-    3. **Book Detail Modal / Page:** In-depth view with summaries, key themes, author info, and reading level.
-    4. **My Bookshelf / Reading DNA:** Save books ("Want to Read", "Finished"), interactive mood/genre preference sliders.
-  - Polish animations: Smooth transitions, hover effects, skeleton loaders during AI generation.
+* **Detailed Contract:** [docs/contracts/MEMBER_1_FRONTEND_CONTRACT.md](file:///c:/Users/acer/OneDrive/Desktop/Navya/hacklezgo/docs/contracts/MEMBER_1_FRONTEND_CONTRACT.md)
+* **Key Deliverables:**
+  - Hero Natural-Language Discovery Bar with mood chips (#Dark, #Cozy, #MindBender).
+  - Dynamic Book Recommendation Cards with covers, ratings, similarity match %, and Gemini rationale badges.
+  - "Book Blend" interactive dock (pick 2 books -> show midpoint matches).
+  - Bookshelf Drawer ("Want to Read", "Reading", "Finished") + live "Reading DNA" taste charts.
+  - Offline Mock Mode toggle so live demo never crashes on stage.
 * **Deliverable Branch:** `feat/frontend-ui`
 
 ---
 
-### ⚙️ Member 2: Backend Developer 1 (Core Services & Data Layer)
-* **Core Mission:** Own database models, user session/profile management, book catalog CRUD, and core API scaffolding.
-* **Key Responsibilities:**
-  - Setup core server framework (FastAPI or Express.js) and database connection (PostgreSQL / SQLite / Supabase).
-  - Implement Database Schemas from [DATABASE_SCHEMA.md](file:///c:/Users/acer/OneDrive/Desktop/Navya/hacklezgo/docs/DATABASE_SCHEMA.md):
-    - `users`, `books`, `user_bookshelves`, `ratings_reviews`.
-  - Build endpoints:
-    - `POST /api/v1/auth/guest-session` & `POST /api/v1/auth/login`
-    - `GET /api/v1/books/search` (text search by title/author/ISBN)
-    - `GET /api/v1/books/:id` (detailed book info)
-    - `GET/POST /api/v1/bookshelves` (user reading list management)
-  - Seed initial book catalog (top 500-1000 popular books with covers, genres, and metadata).
-  - Configure CORS, environment variables, and Docker / local dev orchestrator.
-* **Deliverable Branch:** `feat/backend-core-catalog`
+### 🧠 Member 2: Backend Developer 1 (Recommendation & Vector Search)
+* **Core Mission:** Deliver blazing-fast (<500ms) semantic search, item-to-item similarity, personalized re-ranking, and the "Book Blend" feature.
+* **Detailed Contract:** [docs/contracts/MEMBER_2_BACKEND_1_RECS_VECTOR_CONTRACT.md](file:///c:/Users/acer/OneDrive/Desktop/Navya/hacklezgo/docs/contracts/MEMBER_2_BACKEND_1_RECS_VECTOR_CONTRACT.md)
+* **Key Deliverables:**
+  - **Natural-Language Semantic Search:** Embed query, rank by cosine similarity over in-memory precomputed book embeddings with filters (genre, max pages, year, rating).
+  - **"More Like This" & Re-Ranking (`GET /books/{id}/similar`):** Item-to-item vector similarity, blended with Backend 2's taste profile for personalized rankings.
+  - **Book Blend:** Average the vector embeddings of two chosen books to find titles at their midpoint.
+* **Deliverable Branch:** `feat/backend-1-recs-vectors`
 
 ---
 
-### 🧠 Member 3: Backend Developer 2 (Recommendation Engine & Semantic Search)
-* **Core Mission:** Build the intelligent recommendation algorithm that differentiates this project from a standard book database.
-* **Key Responsibilities:**
-  - Build the **Dual-Engine Recommendation Pipeline**:
-    1. **Semantic Vector Search:** Natural language search powered by text embeddings (e.g. `all-MiniLM-L6-v2` or Gemini embeddings via ChromaDB / FAISS / pgvector). Matches user queries like *"cozy autumnal mystery in a small village"* to semantic plot vectors.
-    2. **Content-Based & Collaborative Filtering:** Recommends similar titles based on genre cosine similarity, author overlap, and bookshelf history.
-    3. **Mood & Vibe Filter:** Vector math on vibes (e.g., #Dark, #Uplifting, #Brainy, #PageTurner, #Melancholic).
-  - Build endpoints:
-    - `POST /api/v1/recommendations/semantic` (query string -> top N ranked books with similarity scores)
-    - `GET /api/v1/recommendations/similar/:bookId` (similar items)
-    - `POST /api/v1/recommendations/personalized` (based on user's shelf + preferences)
-  - Optimize inference time to under 400ms for demo speed.
-* **Deliverable Branch:** `feat/backend-recs-engine`
+### ⚙️ Member 3: Backend Developer 2 (Core API & Database Layer)
+* **Core Mission:** Deliver frictionless guest session persistence, bookshelf CRUD with ratings, user taste profile aggregation, and shareable reading lists.
+* **Detailed Contract:** [docs/contracts/MEMBER_3_BACKEND_2_CORE_DB_CONTRACT.md](file:///c:/Users/acer/OneDrive/Desktop/Navya/hacklezgo/docs/contracts/MEMBER_3_BACKEND_2_CORE_DB_CONTRACT.md)
+* **Key Deliverables:**
+  - **Bookshelves with Reading Status:** `wantToRead`, `reading`, `finished`, and 1-5 star ratings with JWT-based lightweight guest sessions.
+  - **Taste Profile Aggregator (`GET /users/me/taste`):** Turns saved books and ratings into top vibes, favorite genres, and average page length (feeds Backend 1's re-ranking).
+  - **Shareable Reading Lists:** `POST /lists` (generates slug) and `GET /lists/{slug}` (public read-only list).
+* **Deliverable Branch:** `feat/backend-2-core-db`
 
 ---
 
-### 🌐 Member 4: Backend Developer 3 (External Data, AI Insights & Enriched Pipelines)
-* **Core Mission:** Integrate live third-party book APIs, LLM summary & "Why You'll Love This" reasoning engine, and caching.
-* **Key Responsibilities:**
-  - **Live Metadata Enrichment:**
-    - Google Books API / Open Library API client with fallback caching (in-memory or Redis).
-    - Fetches high-res book covers, preview links, publication dates, and page counts on the fly.
-  - **GenAI Reasoning & Reader Insights (Gemini / OpenAI API):**
-    - `POST /api/v1/ai/explain`: Generates a 2-sentence custom explanation for *why* this book was recommended to the user based on their taste.
-    - `POST /api/v1/ai/reader-vibe`: Extract key emotional tags and reading difficulty from book blurbs.
-    - `POST /api/v1/ai/tldr-reviews`: Synthesize common sentiment from book reviews into 3 quick pros and 1 con.
-  - Response caching & rate-limit handling so live judging never hits a 429 quota error.
-  - Setup deployment / hosting (Render, Railway, Fly.io, or Vercel) if cloud demo is required.
-* **Deliverable Branch:** `feat/backend-enrichment-ai`
+### 🌐 Member 4: Backend Developer 3 (External Data & GenAI)
+* **Core Mission:** Power intelligent natural-language query parsing, generate instant Gemini "Why you'll love it" rationales with zero-fail caching, and build the live stage book ingest pipeline.
+* **Detailed Contract:** [docs/contracts/MEMBER_4_BACKEND_3_GENAI_ENRICHMENT_CONTRACT.md](file:///c:/Users/acer/OneDrive/Desktop/Navya/hacklezgo/docs/contracts/MEMBER_4_BACKEND_3_GENAI_ENRICHMENT_CONTRACT.md)
+* **Key Deliverables:**
+  - **Gemini "Why You'll Love It" Rationales:** 2-sentence explanation per result cached by `(query_hash, book_id)` with deterministic template fallback.
+  - **Query Understanding:** Gemini JSON prompt parsing messy input (*"something dark but hopeful, short, no romance"*) into structured `ParsedFilters` that feed Backend 1.
+  - **Google Books Enrichment & Stage Ingest:** Cover/metadata fallback chain + `POST /books/ingest?isbn=...` for live demo ingestion.
+* **Deliverable Branch:** `feat/backend-3-genai-external`
 
 ---
 
 ### 🎙️ Member 5: Presentation, Product & Pitch Lead
-* **Core Mission:** Craft the pitch deck, script the judge walkthrough, ensure judging rubric alignment, and drive the product storytelling.
-* **Key Responsibilities:**
-  - **Pitch Deck (10-12 slides):** Follow the structure in [PITCH_AND_DEMO_PLAYBOOK.md](file:///c:/Users/acer/OneDrive/Desktop/Navya/hacklezgo/docs/PITCH_AND_DEMO_PLAYBOOK.md).
-    - The Problem (Choice paralysis in reading, Goodreads recommendation algorithm is 15 years old and stale).
-    - The Solution (Contextual, semantic mood-based discovery + instant GenAI "Why Read" explanation).
-    - Live Architecture diagram & Tech Highlights.
-    - Market potential & Future Roadmap (Monetization via affiliate links, subscription for book clubs).
-  - **Demo Flow Choreography:**
-    - Test the exact search queries to use during live judging (e.g. *"Show me a sci-fi that feels like Christopher Nolan's Tenet"*).
-    - Prepare pre-recorded backup video / GIF in case WiFi drops on stage.
-  - **README & Devpost / Submission:**
-    - Write winning submission copy, problem statement, architecture highlights, challenges overcome, and team credits.
+* **Core Mission:** Craft the pitch deck, script the judge walkthrough, choreograph the live demo moments, and drive product storytelling.
+* **Detailed Contract:** [docs/contracts/MEMBER_5_PITCH_PRODUCT_CONTRACT.md](file:///c:/Users/acer/OneDrive/Desktop/Navya/hacklezgo/docs/contracts/MEMBER_5_PITCH_PRODUCT_CONTRACT.md)
+* **Key Deliverables:**
+  - **8-Slide Pitch Deck** (Problem, Solution, Tech Architecture, Business Model, Team).
+  - **3-Minute Pitch Script & 90-Second Live Demo Path** (Messy query -> AI Rationale -> Reading DNA -> Book Blend -> Live Ingest).
+  - **Backup Screen Recording** (60-sec video) and Judge Q&A Defense.
 * **Deliverable Branch:** `docs/presentation-pitch`
 
 ---
@@ -150,3 +126,23 @@ In a fast-paced hackathon, the #1 reason teams fail is **dependency blocking** (
    - `fix(ui): handle empty recommendation list`
    - `docs: update pitch deck speaker notes`
 3. **No Breaking Contract Changes:** If any backend dev needs to change an API field, they must announce it in the group channel and update [API_CONTRACTS.md](file:///c:/Users/acer/OneDrive/Desktop/Navya/hacklezgo/docs/API_CONTRACTS.md) first.
+
+---
+
+## 5. Integration Points to Lock Early (Hour 0 – 2)
+
+* **Backend 3 to Backend 1 (Recommendation & Vector Search):** The `ParsedFilters` JSON schema. Agree on field names in the first 2 hours.
+* **Backend 2 (Core API & DB) to Backend 1 (Recommendation & Vector Search):** The `TasteProfile` vector format. A plain dict of vibe weights is enough to start.
+* **All Three Backends:** Return the exact same canonical `Book` object shape ([SHARED_SCHEMAS_AND_INTEGRATION.md](file:///c:/Users/acer/OneDrive/Desktop/Navya/hacklezgo/docs/contracts/SHARED_SCHEMAS_AND_INTEGRATION.md)) so the frontend never special-cases a source.
+* **Coordination Rule:** Tell the frontend and pitch lead who owns what now, so nobody pings the wrong person during integration.
+
+---
+
+## 6. If Time Gets Tight (Feature Cut Order)
+
+Cut features strictly in this order if running behind:
+1. **Cut 1st:** Shareable reading lists (`POST /lists` and `GET /lists/{slug}`)
+2. **Cut 2nd:** Book Blend midpoint vector math
+3. **Cut 3rd:** Live stage ingest (`POST /books/ingest?isbn=...`)
+4. **DO NOT TOUCH (Core Demo):** Semantic search, Gemini rationales, and Bookshelves.
+
