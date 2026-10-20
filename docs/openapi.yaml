@@ -1,0 +1,232 @@
+openapi: 3.0.3
+info:
+  title: NextRead - AI Book Recommendation API
+  description: Hackathon API Specification for NextRead Book Discovery Engine
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Local Development Server
+
+paths:
+  /auth/guest-session:
+    post:
+      summary: Initialize an anonymous guest session
+      tags: [Backend 1 - Core]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                clientDeviceId:
+                  type: string
+      responses:
+        '200':
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+
+  /books/search:
+    get:
+      summary: Search catalog by text query or genre
+      tags: [Backend 1 - Core]
+      parameters:
+        - name: q
+          in: query
+          schema:
+            type: string
+        - name: genre
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: List of books matching query
+
+  /books/{bookId}:
+    get:
+      summary: Fetch single book details
+      tags: [Backend 1 - Core]
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Detailed book item
+
+  /bookshelves/{userId}:
+    get:
+      summary: Get user reading lists
+      tags: [Backend 1 - Core]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User bookshelf contents
+    post:
+      summary: Add book to shelf
+      tags: [Backend 1 - Core]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [bookId, shelfStatus]
+              properties:
+                bookId:
+                  type: string
+                shelfStatus:
+                  type: string
+                  enum: [wantToRead, currentlyReading, finished]
+      responses:
+        '200':
+          description: Book added
+
+  /recommendations/semantic:
+    post:
+      summary: Natural language prompt-based book recommendation
+      tags: [Backend 2 - Recommendation Engine]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [prompt]
+              properties:
+                prompt:
+                  type: string
+                  example: "Mind-bending sci-fi with time dilation and deep philosophical themes"
+                moods:
+                  type: array
+                  items:
+                    type: string
+                minRating:
+                  type: number
+                  default: 3.5
+                limit:
+                  type: integer
+                  default: 6
+      responses:
+        '200':
+          description: Ranked semantic book matches
+
+  /recommendations/similar/{bookId}:
+    get:
+      summary: Find books similar to a given book
+      tags: [Backend 2 - Recommendation Engine]
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 4
+      responses:
+        '200':
+          description: Similar books list
+
+  /recommendations/personalized:
+    post:
+      summary: Personalized recommendation based on user reading shelf
+      tags: [Backend 2 - Recommendation Engine]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                likedBookIds:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Personalized list
+
+  /ai/explain:
+    post:
+      summary: Generate custom 2-sentence rationale for why user should read this book
+      tags: [Backend 3 - AI & Enrichment]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [bookId, bookTitle, userPrompt]
+              properties:
+                bookId:
+                  type: string
+                bookTitle:
+                  type: string
+                bookDescription:
+                  type: string
+                userPrompt:
+                  type: string
+      responses:
+        '200':
+          description: AI generated rationale and vibe tags
+
+  /ai/tldr:
+    post:
+      summary: Generate quick TL;DR summary with pros and heads-up
+      tags: [Backend 3 - AI & Enrichment]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bookId:
+                  type: string
+      responses:
+        '200':
+          description: TL;DR review summary
+
+components:
+  schemas:
+    SessionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            userId:
+              type: string
+            isGuest:
+              type: boolean
